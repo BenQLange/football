@@ -19,8 +19,27 @@ from gfootball.env import scenario_builder
 import gym
 from gym.envs.registration import register
 
+## HACK BY BERNARD
+env_dict = gym.envs.registration.registry.env_specs.copy()
 
 for env_name in scenario_builder.all_scenarios():
+
+  ## HACK BY BERNARD START
+  # Why? Error: gym.error.Error: Cannot re-register id: GFootball-11_vs_11_competition-SMM-v0
+  envs_list = [
+    'GFootball-{env_name}-SMM-v0'.format(env_name=env_name),
+    'GFootball-{env_name}-Pixels-v0'.format(env_name=env_name),
+    'GFootball-{env_name}-simple115-v0'.format(env_name=env_name),
+    'GFootball-{env_name}-simple115v2-v0'.format(env_name=env_name)
+   ]
+  for env in env_dict:
+      for env_name in envs_list:
+          if env_name in env:
+              del gym.envs.registration.registry.env_specs[env]
+
+  ## HACK BY BERNARD END 
+
+
   register(
       id='GFootball-{env_name}-SMM-v0'.format(env_name=env_name),
       entry_point='gfootball.env:create_environment',
